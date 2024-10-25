@@ -1,0 +1,73 @@
+.adduser-form{
+    display: inline-block;
+    width: 40%;
+    margin-top: 100px;
+    margin-left: 30%;
+}
+.login-fields-discription{
+    display: block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: grey;
+}
+.adduser-form form .adduser-fields-username{
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgb(173, 166, 166);
+    border-radius: 20px;
+    font-size: 18px;
+}
+.adduser-form form .adduser-fields-email{
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgb(173, 166, 166);
+    border-radius: 20px;
+    font-size: 18px;
+}
+.adduser-form form .adduser-fields-password{
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgb(173, 166, 166);
+    border-radius: 20px;
+    font-size: 18px;
+}
+.adduser-form form .adduser-fields-confirm-password{
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgb(173, 166, 166);
+    border-radius: 20px;
+    font-size: 18px;
+}
+.adduser-form form .adduser-fields-role{
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgb(173, 166, 166);
+    border-radius: 20px;
+    font-size: 18px;
+}
+.adduser-form form .adduser-button{
+    padding: 10px;
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: white;
+    background: black;
+    border: none;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: 700;
+}
+.adduser-form form .adduser-message-username, .adduser-message-email, .adduser-message-password, .adduser-message-confirm-password{
+    color: red;
+}

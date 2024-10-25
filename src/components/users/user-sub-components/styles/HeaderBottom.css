@@ -1,0 +1,44 @@
+.cart-header-bottom{
+    position: absolute;
+    width: 100%;
+    top: 120px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-size: 16px;
+    font-weight: 400;
+    background: white;
+    display: flex;
+    justify-content: center;
+    z-index: 3;
+}
+.cart-header-bottom a{
+    text-decoration: none;
+    color: #3b322c;
+}
+.cart-header-bottom a:hover{
+    color: #c11e1e;
+}
+@keyframes dropdown {
+    from{
+        height: 0%;
+    }
+    to{
+        height: 100%;
+    }
+}
+.cart-header-bottom-menu-center{
+    padding-top: 10px;
+}
+.cart-header-bottom-menuitems-c{
+    display: inline-block;
+    padding-right: 25px;
+    padding-left: 25px;
+}
+.cart-header-bottom-menuitems-c:hover .cart-header-bottom-dropdown-icon{
+    color: #c11e1e;
+}
+.cart-header-bottom-dropdown-icon{
+    font-size: 12px;
+    margin-left: 5px;
+    color: grey;
+}

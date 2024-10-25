@@ -1,0 +1,199 @@
+.cart-items{
+    margin-top: 250px;
+    margin-left: 50px;
+    width: 670px;
+}
+.cart-items-heading{
+    padding-top: 20px;
+    padding-bottom: 40px;
+    color: grey;
+    border-bottom: 1px solid grey;
+}
+.cart-items-heading-product{
+    position: absolute;
+    margin-left: 20px;
+}
+.cart-items-heading-price{
+    position: absolute;
+    margin-left: 350px;
+}
+.cart-items-heading-quantity{
+    position: absolute;
+    margin-left: 450px;
+}
+.cart-items-heading-subtotal{
+    position: absolute;
+    margin-left: 580px;
+}
+.cart-item{
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid grey;
+}
+.cart-item img{
+    display: inline-block;
+    width: 120px;
+}
+.cart-item-details{
+    display: inline-block;
+}
+.cart-item-details h3{
+    position: absolute;
+    display: inline-block;
+    margin-top: -70px;
+    margin-left: 30px;
+    width: 150px;
+    font-size: 14px;
+}
+.cart-item-details p{
+    position: absolute;
+    display: inline-block;
+    margin-top: -60px;
+    margin-left: 230px;
+    width: 50px;
+}
+.quantity-button{
+    position: absolute;
+    display: inline-block;
+    margin-top: 55px;
+    margin-left: 310px;
+    width: 100px;
+    border: 1px solid grey;
+    border-radius: 20px;
+}
+.product-increament{
+    display: inline-block;
+    padding-left: 7px;
+    padding-right: 10px;
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: inherit;
+}
+.product-quantity{
+    display: inline-block;
+    padding-left: 15px;
+    width: 30px;
+}
+.product-decreament{
+    display: inline-block;
+    padding-left: 0px;
+    padding-right: 5px;
+    font-size: 25px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: inherit;
+}
+.cart-item-total{
+    position: absolute;
+    display: inline-block;
+    margin-top: 45px;
+    margin-left: 470px;
+}
+.cart-item-remove{
+    position: absolute;
+    display: inline-block;
+    margin-top: 62px;
+    margin-left: 520px;
+    color: darkgrey;
+    cursor: pointer;
+}
+.cart-totals-card{
+    position: absolute;
+    display: inline-block;
+    width: 400px;
+    top: 270px;
+    right: 50px;
+    padding: 40px;
+    border: 2px solid #c11e1e;
+    border-radius: 30px;
+}
+.cart-totals-card-heading{
+    margin-top: -20px;
+    font-size: 20px;
+}
+.cart-totals-card-subtotals{
+    display: inline-block;
+    padding-bottom: 20px;
+    border-bottom: 1px solid lightgrey;
+}
+.cart-totals-card-subtotals-heading{
+    display: inline-block;
+    color: grey;
+}
+.cart-totals-card-subtotals-price{
+    display: inline-block;
+    margin-left: 280px;
+    font-size: 18px;
+    font-weight: 700;
+}
+.cart-totals-card-shipping{
+    display: inline-block;
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid lightgrey;
+}
+.cart-totals-card-shipping-heading{
+    display: inline-block;
+    color: grey;
+}
+.cart-totals-card-shipping-details{
+    position: absolute;
+    display: inline-block;
+    margin-left: 70px;
+    font-size: 14px;
+}
+.cart-totals-card-shipping-discription{
+    margin-top: 20px;
+    margin-left: 20px;
+    font-style :Italic;
+    color: grey;
+}
+.cart-totals-card-shipping-calculate{
+    margin-top: 20px;
+    font-weight : 500;
+    cursor: pointer;
+}
+.cart-totals-card-total{
+    margin-top: 100px;
+}
+.cart-totals-card-total-heading{
+    display: inline-block;
+    margin-top: 50px;
+    color: grey;
+}
+.cart-totals-card-total-price{
+    display: inline-block;
+    margin-left: 280px;
+    font-size: 18px;
+    font-weight: 700;
+}
+.cart-totals-card-button{
+    margin-top: 20px;
+    background: #c11e1e;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 115px;
+    color: white;
+    border-radius: 30px;
+}
+.cart-empty-message{
+    position: absolute;
+    top: 200px;
+    left: 40%;
+    font-weight: 600;
+    text-align: center;
+}
+.browse-products-button{
+    display: inline-block;
+    font-weight: 600;
+    color: white;
+    background: #c11e1e;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 2px 2px 0 #5c0404, 4px 2px 0 #701313;
+}

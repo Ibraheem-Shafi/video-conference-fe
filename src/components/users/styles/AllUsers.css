@@ -1,0 +1,45 @@
+.allusers-main{
+    display: inline-block;
+    margin-top: 150px;
+    margin-left: 30%;
+}
+table{
+    padding: 50px;
+    border: 2px solid grey;
+    border-radius: 50px;
+}
+th{
+    padding: 15px;
+    background: rgb(197, 192, 192);
+    border: 2px solid grey;
+    border-radius: 15px;
+}
+td{
+    padding: 15px;
+    background: rgb(240, 231, 231);
+    border: 2px solid grey;
+    border-radius: 15px;
+}
+Link{
+    text-decoration-line: none;
+}
+.allusers-edit-link{
+    text-decoration: none;
+    color: white;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    background: rgb(71, 155, 84);
+    border: 2px solid rgb(106, 176, 88);
+    border-radius: 15px;
+}
+.allusers-delete-link{
+    color: white;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 15px;
+    padding-right: 15px;
+    background: rgb(223, 49, 37);
+    border: 2px solid rgb(159, 39, 39);
+    border-radius: 15px;
+}

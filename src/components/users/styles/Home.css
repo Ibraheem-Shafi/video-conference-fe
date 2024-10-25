@@ -1,0 +1,114 @@
+.Home{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgb(134, 142, 139) ,rgb(34, 37, 37));
+}
+.Header{
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(0deg, #161516 , #2c2c2c);
+}
+.header-logo{
+    display: inline-block;
+    width: 200px;
+    height: 80px;
+}
+.header-logo img{
+    width: 100%;
+    height: 100%;
+}
+.header-menu{
+    float: right;
+    margin-top: 30px;
+}
+.header-menu a{
+    margin: 0px 20px;
+    text-decoration: none;
+    color: aqua;
+    padding: 5px 15px;
+    border: 2px solid aqua;
+    border-radius: 20px;
+}
+.background-icons{
+    color: aqua;
+}
+.background-icon-1{
+    position: absolute;
+    left: 200px;
+    top: 150px;
+    font-size: 50px;
+    transform: rotate(-20deg);
+}.background-icon-2{
+    position: absolute;
+    left: 850px;
+    top: 150px;
+    font-size: 50px;
+    transform: rotate(20deg);
+}.background-icon-3{
+    position: absolute;
+    left: 100px;
+    top: 400px;
+    font-size: 50px;
+    transform: rotate(-20deg);
+}.background-icon-4{
+    position: absolute;
+    left: 1000px;
+    top: 300px;
+    font-size: 50px;
+    transform: rotate(-20deg);
+}.background-icon-5{
+    position: absolute;
+    left: 700px;
+    top: 200px;
+    font-size: 50px;
+    transform: rotate(20deg);
+}.background-icon-6{
+    position: absolute;
+    left: 400px;
+    top: 500px;
+    font-size: 50px;
+    transform: rotate(20deg);
+}.background-icon-7{
+    position: absolute;
+    left: 900px;
+    top: 400px;
+    font-size: 50px;
+    transform: rotate(20deg);
+}.background-icon-8{
+    position: absolute;
+    left: 50px;
+    top: 300px;
+    font-size: 50px;
+    transform: rotate(-20deg);
+}.background-icon-9{
+    position: absolute;
+    left: 400px;
+    top: 300px;
+    font-size: 50px;
+    transform: rotate(-20deg);
+}.background-icon-10{
+    position: absolute;
+    left: 600px;
+    top: 100px;
+    font-size: 50px;
+    transform: rotate(20deg);
+}.background-icon-11{
+    position: absolute;
+    left: 400px;
+    top: 150px;
+    font-size: 50px;
+    transform: rotate(20deg);
+}.background-icon-12{
+    position: absolute;
+    right: 150px;
+    top: 100px;
+    font-size: 50px;
+    transform: rotate(-20deg);
+}.background-icon-13{
+    position: absolute;
+    left: 700px;
+    top: 450px;
+    font-size: 50px;
+    transform: rotate(20deg);
+}
