@@ -58,67 +58,63 @@ const VideoConference = () => {
   }, []);
 
   useEffect(() => {
-
     if (!socket || !localStream) return;
-
-    // Function to create and manage peer connections
-    const createPeer = (socketId) => {
+  
+    // Function to create a new peer
+    const createPeer = (initiator, socketId) => {
       const peer = new SimplePeer({
-        initiator: true, // For testing, set to false for other participants
-        trickle: false, // For faster connections
+        initiator, // true if the initiating peer, false otherwise
+        trickle: false,
         stream: localStream,
       });
-
-      // Event listener for when the peer is ready to send signals
+  
       peer.on('signal', (data) => {
+        // Send signaling data to other device
         socket.emit('signal', { to: socketId, signalData: data });
       });
-
-      // Event listener for when the peer receives a signal
-      socket.on('signal', (data) => {
-        if (data.from === socketId) {
-          peer.signal(data.signalData);
-        }
-      });
-
-      // Event listener for when the peer stream is received
+  
       peer.on('stream', (stream) => {
+        // Add the stream to the video element
         const peerRef = { socketId, peer, ref: React.createRef() };
         peersRef.current.push(peerRef);
         setPeers((prevPeers) => [...prevPeers, peerRef]);
-
+  
         const index = peersRef.current.length - 1;
-      
-        // Set the stream to the video element
         if (videoRefs.current[index]) {
           videoRefs.current[index].srcObject = stream;
         }
       });
-
-      // Event listener for when the peer connection is closed
+  
       peer.on('close', () => {
         setPeers((prevPeers) => prevPeers.filter((peer) => peer.socketId !== socketId));
-        // Clean up the peerRef from peersRef
         const peerRef = peersRef.current.find((ref) => ref.socketId === socketId);
-        if (peerRef) {
-          peersRef.current.splice(peersRef.current.indexOf(peerRef), 1);
-        }
+        if (peerRef) peersRef.current.splice(peersRef.current.indexOf(peerRef), 1);
       });
-
+  
       return peer;
     };
-
-    // Event listener for when a new participant joins
+  
     socket.on('user-connected', (socketId) => {
-      console.log('New participant connected:', socketId);
-      createPeer(socketId);
+      const peer = createPeer(true, socketId);
+      peersRef.current.push({ socketId, peer });
     });
-
-    // Event listener for when a participant leaves
+  
+    socket.on('signal', (data) => {
+      const peerObj = peersRef.current.find((p) => p.socketId === data.from);
+      if (peerObj) {
+        peerObj.peer.signal(data.signalData);
+      } else {
+        const peer = createPeer(false, data.from);
+        peersRef.current.push({ socketId: data.from, peer });
+        peer.signal(data.signalData);
+      }
+    });
+  
     socket.on('user-disconnected', (socketId) => {
-      console.log('Participant disconnected:', socketId);
       setPeers((prevPeers) => prevPeers.filter((peer) => peer.socketId !== socketId));
-    });
+      const peerRef = peersRef.current.find((ref) => ref.socketId === socketId);
+      if (peerRef) peersRef.current.splice(peersRef.current.indexOf(peerRef), 1);
+    });  
   
     socket.on('audioVideoStatus', ({ socketId, isAudioMuted, isVideoOff }) => {
       const peerRef = peersRef.current.find((ref) => ref.socketId === socketId);
