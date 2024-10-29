@@ -15,7 +15,7 @@ const VideoConference = () => {
   const [isVideoOff, setIsVideoOff] = useState(false);
 
   const peersRef = useRef([]); // Use useRef to manage peer references
-  const videoRefs = useRef([]);
+  const videoRefs = useRef({});
 
   const navigate = useNavigate();
 
@@ -73,18 +73,28 @@ const VideoConference = () => {
         socket.emit('signal', { to: socketId, signalData: data });
       });
   
+      // peer.on('stream', (stream) => {
+      //   // Add the stream to the video element
+      //   const peerRef = { socketId, peer, ref: React.createRef() };
+      //   peersRef.current.push(peerRef);
+      //   setPeers((prevPeers) => [...prevPeers, peerRef]);
+  
+      //   const index = peersRef.current.length - 1;
+      //   if (videoRefs.current[index]) {
+      //     videoRefs.current[index].srcObject = stream;
+      //   }
+      // });
+  
       peer.on('stream', (stream) => {
-        // Add the stream to the video element
         const peerRef = { socketId, peer, ref: React.createRef() };
         peersRef.current.push(peerRef);
         setPeers((prevPeers) => [...prevPeers, peerRef]);
-  
-        const index = peersRef.current.length - 1;
-        if (videoRefs.current[index]) {
-          videoRefs.current[index].srcObject = stream;
+    
+        if (videoRefs.current[socketId]) {
+          videoRefs.current[socketId].srcObject = stream;
         }
-      });
-  
+      });    
+
       peer.on('close', () => {
         setPeers((prevPeers) => prevPeers.filter((peer) => peer.socketId !== socketId));
         const peerRef = peersRef.current.find((ref) => ref.socketId === socketId);
@@ -95,10 +105,12 @@ const VideoConference = () => {
     };
   
     socket.on('user-connected', (socketId) => {
-      const peer = createPeer(true, socketId);
-      peersRef.current.push({ socketId, peer });
+      if (!peersRef.current.some((ref) => ref.socketId === socketId)) {
+        const peer = createPeer(true, socketId);
+        peersRef.current.push({ socketId, peer });
+      }
     });
-  
+    
     socket.on('signal', (data) => {
       const peerObj = peersRef.current.find((p) => p.socketId === data.from);
       if (peerObj) {
@@ -208,9 +220,13 @@ const handleLeaveConference = () => {
 
       {/* Display video streams of remote participants */}
       <div className='other-person'>
-      {peers.map((peer, index) => (
-            <video key={index} ref={(video) => (videoRefs.current[index] = video)} autoPlay playsInline />
-          
+      {peers.map((peer) => (
+        <video
+          key={peer.socketId}
+          ref={(video) => (videoRefs.current[peer.socketId] = video)}
+          autoPlay
+          playsInline
+        />
       ))}
       </div>
 
