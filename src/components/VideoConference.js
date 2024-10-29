@@ -211,10 +211,12 @@ const handleLeaveConference = () => {
       )}
 
       {/* Display video streams of remote participants */}
+      <div className='other-person'>
       {peers.map((peer, index) => (
             <video key={index} ref={(video) => (videoRefs.current[index] = video)} autoPlay playsInline />
           
       ))}
+      </div>
 
           {/* <div className='other-person'><img src='/muhammad.jpg'/></div> */}
 
