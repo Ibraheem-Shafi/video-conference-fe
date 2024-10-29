@@ -43,7 +43,7 @@ const VideoConference = () => {
     initializeMediaStream();
 
     // Initialize the socket connection
-    const socket = io('http://localhost:5000');
+    const socket = io('https://video-conference-be.onrender.com');
     setSocket(socket);
 
     // Clean up the media stream and socket connection on component unmount
@@ -212,10 +212,11 @@ const handleLeaveConference = () => {
 
       {/* Display video streams of remote participants */}
       {peers.map((peer, index) => (
-        <video key={index} ref={(video) => (videoRefs.current[index] = video)} autoPlay playsInline />
+            <video key={index} ref={(video) => (videoRefs.current[index] = video)} autoPlay playsInline />
+          
       ))}
 
-          <div className='other-person'><img src='/muhammad.jpg'/></div>
+          {/* <div className='other-person'><img src='/muhammad.jpg'/></div> */}
 
           <div className='local-bar'>
             <div onClick={handleToggleAudio} className='local-bar-icon icon1'>
