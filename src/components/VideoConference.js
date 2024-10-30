@@ -1,249 +1,160 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { io } from 'socket.io-client';
-import SimplePeer from 'simple-peer';
-import Header from './sub-components/Header'
+import Button from "@material-ui/core/Button"
+import IconButton from "@material-ui/core/IconButton"
+import TextField from "@material-ui/core/TextField"
+import AssignmentIcon from "@material-ui/icons/Assignment"
+import PhoneIcon from "@material-ui/icons/Phone"
+import React, { useEffect, useRef, useState } from "react"
+import { CopyToClipboard } from "react-copy-to-clipboard"
+import Peer from "simple-peer"
+import io from "socket.io-client"
+import "./../App.css"
 
-import './users/styles/VideoConference.css'
 
+const socket = io.connect('http://localhost:5000')
 const VideoConference = () => {
-  const [localStream, setLocalStream] = useState(null);
-  const [socket, setSocket] = useState(null);
-  const [peers, setPeers] = useState([]);
-  const localVideo = React.createRef();
-  const [isAudioMuted, setIsAudioMuted] = useState(false);
-  const [isVideoOff, setIsVideoOff] = useState(false);
+	const [ me, setMe ] = useState("")
+	const [ stream, setStream ] = useState()
+	const [ receivingCall, setReceivingCall ] = useState(false)
+	const [ caller, setCaller ] = useState("")
+	const [ callerSignal, setCallerSignal ] = useState()
+	const [ callAccepted, setCallAccepted ] = useState(false)
+	const [ idToCall, setIdToCall ] = useState("")
+	const [ callEnded, setCallEnded] = useState(false)
+	const [ name, setName ] = useState("")
+	const myVideo = useRef()
+	const userVideo = useRef()
+	const connectionRef= useRef()
 
-  const peersRef = useRef([]); // Use useRef to manage peer references
-  const videoRefs = useRef({});
+	useEffect(() => {
+		navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+			setStream(stream)
+				myVideo.current.srcObject = stream
+		})
 
-  const navigate = useNavigate();
+	socket.on("me", (id) => {
+			setMe(id)
+		})
 
-  const sendAudioVideoStatus = (isAudioMuted, isVideoOff) => {
-    socket.emit('audioVideoStatus', { isAudioMuted, isVideoOff });
-  };
+		socket.on("callUser", (data) => {
+			setReceivingCall(true)
+			setCaller(data.from)
+			setName(data.name)
+			setCallerSignal(data.signal)
+		})
+	}, [])
 
-  useEffect(() => {
-    // Function to initialize the media stream
-    const initializeMediaStream = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        console.log('Media stream initialized successfully:', stream);
-        // Additional log to check video tracks
-      const videoTracks = stream.getVideoTracks();
-      console.log('Video tracks:', videoTracks);
+	const callUser = (id) => {
+		const peer = new Peer({
+			initiator: true,
+			trickle: false,
+			stream: stream
+		})
+		peer.on("signal", (data) => {
+			socket.emit("callUser", {
+				userToCall: id,
+				signalData: data,
+				from: me,
+				name: name
+			})
+		})
+		peer.on("stream", (stream) => {
+			
+				userVideo.current.srcObject = stream
+			
+		})
+		socket.on("callAccepted", (signal) => {
+			setCallAccepted(true)
+			peer.signal(signal)
+		})
 
-      setLocalStream(stream);
-      } catch (error) {
-        console.log('Error accessing media devices:', error);
-      }
-    };
+		connectionRef.current = peer
+	}
 
-    // Initialize the media stream
-    initializeMediaStream();
+	const answerCall =() =>  {
+		setCallAccepted(true)
+		const peer = new Peer({
+			initiator: false,
+			trickle: false,
+			stream: stream
+		})
+		peer.on("signal", (data) => {
+			socket.emit("answerCall", { signal: data, to: caller })
+		})
+		peer.on("stream", (stream) => {
+			userVideo.current.srcObject = stream
+		})
 
-    // Initialize the socket connection
-    const socket = io('https://video-conference-be.onrender.com');
-    setSocket(socket);
+		peer.signal(callerSignal)
+		connectionRef.current = peer
+	}
 
-    // Clean up the media stream and socket connection on component unmount
-    return () => {
-      if (localStream) {
-        localStream.getTracks().forEach((track) => track.stop());
-      }
-      if (socket) {
-        socket.disconnect();
-      }
-    };
-  }, []);
+	const leaveCall = () => {
+		setCallEnded(true)
+		connectionRef.current.destroy()
+	}
 
-  useEffect(() => {
-    if (!socket || !localStream) return;
-  
-    // Function to create a new peer
-    const createPeer = (initiator, socketId) => {
-      const peer = new SimplePeer({
-        initiator, // true if the initiating peer, false otherwise
-        trickle: false,
-        stream: localStream,
-      });
-  
-      peer.on('signal', (data) => {
-        // Send signaling data to other device
-        socket.emit('signal', { to: socketId, signalData: data });
-      });
-  
-      // peer.on('stream', (stream) => {
-      //   // Add the stream to the video element
-      //   const peerRef = { socketId, peer, ref: React.createRef() };
-      //   peersRef.current.push(peerRef);
-      //   setPeers((prevPeers) => [...prevPeers, peerRef]);
-  
-      //   const index = peersRef.current.length - 1;
-      //   if (videoRefs.current[index]) {
-      //     videoRefs.current[index].srcObject = stream;
-      //   }
-      // });
-  
-      peer.on('stream', (stream) => {
-        const peerRef = { socketId, peer, ref: React.createRef() };
-        peersRef.current.push(peerRef);
-        setPeers((prevPeers) => [...prevPeers, peerRef]);
-    
-        if (videoRefs.current[socketId]) {
-          videoRefs.current[socketId].srcObject = stream;
-        }
-      });    
+	return (
+		<>
+			<h1 style={{ textAlign: "center", color: '#fff' }}>Zoomish</h1>
+		<div className="container">
+			<div className="video-container">
+				<div className="video">
+					{stream &&  <video playsInline muted ref={myVideo} autoPlay style={{ width: "300px" }} />}
+				</div>
+				<div className="video">
+					{callAccepted && !callEnded ?
+					<video playsInline ref={userVideo} autoPlay style={{ width: "300px"}} />:
+					null}
+				</div>
+			</div>
+			<div className="myId">
+				<TextField
+					id="filled-basic"
+					label="Name"
+					variant="filled"
+					value={name}
+					onChange={(e) => setName(e.target.value)}
+					style={{ marginBottom: "20px" }}
+				/>
+				<CopyToClipboard text={me} style={{ marginBottom: "2rem" }}>
+					<Button variant="contained" color="primary" startIcon={<AssignmentIcon fontSize="large" />}>
+						Copy ID
+					</Button>
+				</CopyToClipboard>
 
-      peer.on('close', () => {
-        setPeers((prevPeers) => prevPeers.filter((peer) => peer.socketId !== socketId));
-        const peerRef = peersRef.current.find((ref) => ref.socketId === socketId);
-        if (peerRef) peersRef.current.splice(peersRef.current.indexOf(peerRef), 1);
-      });
-  
-      return peer;
-    };
-  
-    socket.on('user-connected', (socketId) => {
-      if (!peersRef.current.some((ref) => ref.socketId === socketId)) {
-        const peer = createPeer(true, socketId);
-        peersRef.current.push({ socketId, peer });
-      }
-    });
-    
-    socket.on('signal', (data) => {
-      const peerObj = peersRef.current.find((p) => p.socketId === data.from);
-      if (peerObj) {
-        peerObj.peer.signal(data.signalData);
-      } else {
-        const peer = createPeer(false, data.from);
-        peersRef.current.push({ socketId: data.from, peer });
-        peer.signal(data.signalData);
-      }
-    });
-  
-    socket.on('user-disconnected', (socketId) => {
-      setPeers((prevPeers) => prevPeers.filter((peer) => peer.socketId !== socketId));
-      const peerRef = peersRef.current.find((ref) => ref.socketId === socketId);
-      if (peerRef) peersRef.current.splice(peersRef.current.indexOf(peerRef), 1);
-    });  
-  
-    socket.on('audioVideoStatus', ({ socketId, isAudioMuted, isVideoOff }) => {
-      const peerRef = peersRef.current.find((ref) => ref.socketId === socketId);
-      if (peerRef) {
-        const { peer } = peerRef;
-        if (peer) {
-          // Mute or unmute the audio of the peer's stream
-          peer.setStream((stream) => {
-            stream.getAudioTracks().forEach((track) => {
-              track.enabled = !isAudioMuted;
-            });
-            return stream;
-          });
+				<TextField
+					id="filled-basic"
+					label="ID to call"
+					variant="filled"
+					value={idToCall}
+					onChange={(e) => setIdToCall(e.target.value)}
+				/>
+				<div className="call-button">
+					{callAccepted && !callEnded ? (
+						<Button variant="contained" color="secondary" onClick={leaveCall}>
+							End Call
+						</Button>
+					) : (
+						<IconButton color="primary" aria-label="call" onClick={() => callUser(idToCall)}>
+							<PhoneIcon fontSize="large" />
+						</IconButton>
+					)}
+					{idToCall}
+				</div>
+			</div>
+			<div>
+				{receivingCall && !callAccepted ? (
+						<div className="caller">
+						<h1 >{name} is calling...</h1>
+						<Button variant="contained" color="primary" onClick={answerCall}>
+							Answer
+						</Button>
+					</div>
+				) : null}
+			</div>
+		</div>
+		</>
+	)
+}
 
-          // Enable or disable the video of the peer's stream
-          peer.setStream((stream) => {
-            stream.getVideoTracks().forEach((track) => {
-              track.enabled = !isVideoOff;
-            });
-            return stream;
-          });
-        }
-      }
-    });
-
-  }, [socket, localStream]);
-
-  useEffect(() => {
-    // Let's update the srcObject only after the ref has been set
-    // and then every time the stream prop updates
-    if (localVideo.current) localVideo.current.srcObject = localStream;
-  }, [localStream, localVideo]);
-
-  const handleToggleAudio = () => {
-    if (localStream) {
-      const isAudioMuted = !localStream.getAudioTracks()[0].enabled;
-      localStream.getAudioTracks().forEach((track) => {
-        track.enabled = isAudioMuted;
-      });
-      setIsAudioMuted(isAudioMuted);
-
-      // Inform other participants about the audio status change
-      sendAudioVideoStatus(isAudioMuted, isVideoOff);
-    }
-  };
-
-  const handleToggleVideo = () => {
-    if (localStream) {
-      const isVideoOff = !localStream.getVideoTracks()[0].enabled;
-      localStream.getVideoTracks().forEach((track) => {
-        track.enabled = isVideoOff;
-      });
-      setIsVideoOff(isVideoOff);
-
-      // Inform other participants about the video status change
-      sendAudioVideoStatus(isAudioMuted, isVideoOff);
-    }
-  };
-
-const handleLeaveConference = () => {
-      // Stop all media tracks in the local stream
-      if (localStream) {
-        localStream.getTracks().forEach((track) => track.stop());
-      }
-  
-      // Disconnect from the socket server
-      if (socket) {
-        socket.disconnect();
-      }
-  
-      // Navigate back to the home page (or any other desired route)
-      navigate('/'); // Replace '/' with the desired route
-    
-  };
-
-
-  return (
-    <div className='VideoConference'>
-
-        <Header />
-
-        {/* Display local video stream */}
-      {localStream ? (
-        <div className='local-stream'>
-          <video ref={localVideo} autoPlay playsInline />
-          
-        </div>
-      ) : (
-        <p>Loading local video...</p>
-      )}
-
-      {/* Display video streams of remote participants */}
-      <div className='other-person'>
-      {peers.map((peer) => (
-        <video
-          key={peer.socketId}
-          ref={(video) => (videoRefs.current[peer.socketId] = video)}
-          autoPlay
-          playsInline
-        />
-      ))}
-      </div>
-
-          {/* <div className='other-person'><img src='/muhammad.jpg'/></div> */}
-
-          <div className='local-bar'>
-            <div onClick={handleToggleAudio} className='local-bar-icon icon1'>
-              {isAudioMuted ? <i class="fa-solid fa-microphone-slash"></i> : <i class="fa-solid fa-microphone"></i>}
-            </div>
-            <div onClick={handleToggleVideo} className='local-bar-icon icon2'>
-              {isVideoOff ? <i class="fa-solid fa-video-slash"></i> : <i class="fa-solid fa-video"></i>}
-            </div>
-            <div onClick={handleLeaveConference} className='local-bar-icon icon3'><i class="fa-solid fa-right-from-bracket"></i></div>
-          </div>
-      
-    </div>
-  );
-};
-
-export default VideoConference;
+export default VideoConference
