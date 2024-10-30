@@ -10,7 +10,7 @@ import io from "socket.io-client"
 import "./../App.css"
 
 
-const socket = io.connect('http://localhost:5000')
+const socket = io.connect('https://video-conference-be.onrender.com')
 const VideoConference = () => {
 	const [ me, setMe ] = useState("")
 	const [ stream, setStream ] = useState()
